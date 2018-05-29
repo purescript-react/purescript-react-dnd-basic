@@ -1,0 +1,17 @@
+{
+  "name": "react-dnd-basic-examples-basic",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "pulp": "^12.2.0",
+    "react": "^16.2.0",
+    "react-dnd": "^2.6.0",
+    "react-dnd-html5-backend": "^2.6.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.1.0"
+  }
+}

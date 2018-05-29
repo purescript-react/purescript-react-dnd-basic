@@ -1,0 +1,18 @@
+{
+  "name": "purescript-react-dnd-basic",
+  "ignore": ["**/.*", "node_modules", "bower_components", "output"],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lumihq/purescript-react-dnd-basic.git"
+  },
+  "dependencies": {
+    "purescript-prelude": "^3.3.0",
+    "purescript-react-basic": "^0.10.0",
+    "purescript-nullable": "^3.0.0",
+    "purescript-promises": "^2.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0"
+  }
+}
