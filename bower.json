@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "purescript-prelude": "^4.0.0",
-    "purescript-react-basic": "git@github.com:justinwoo/purescript-react-basic.git#893c554bb4c657a01a50f43d820fd8341be4eb00",
+    "purescript-react-basic": "^1.0.0",
     "purescript-nullable": "^4.0.0",
     "purescript-promises": "^3.0.0"
   },
