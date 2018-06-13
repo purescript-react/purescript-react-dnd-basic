@@ -1,6 +1,6 @@
 {
   "name": "purescript-react-dnd-basic",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "purescript-react-basic bindings for react-select",
   "main": "index.js",
   "scripts": {
