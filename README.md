@@ -116,5 +116,5 @@ moveItem fromIndex toIndex items =
   in
     take toIndex items'
       <> maybe [] pure item
-<> drop toIndex items'
+      <> drop toIndex items'
 ```
