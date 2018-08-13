@@ -7,8 +7,8 @@
     "url": "https://github.com/lumihq/purescript-react-dnd-basic.git"
   },
   "dependencies": {
-    "purescript-prelude": "^4.0.0",
-    "purescript-react-basic": "^1.0.0",
+    "purescript-prelude": "^4.1.0",
+    "purescript-react-basic": "^2.0.0",
     "purescript-nullable": "^4.0.0",
     "purescript-promises": "^3.0.0"
   },

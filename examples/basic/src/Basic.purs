@@ -5,21 +5,21 @@ import Prelude
 import Data.Array ((!!), drop, mapWithIndex, take)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(Nothing), fromMaybe, maybe)
-import React.Basic (ReactComponent, createElement, fragment, react)
+import React.Basic as React
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetChecked)
 import React.Basic.Events as Events
 import React.Basic.ReactDND (DragDrop, DragDropContextProps, DragDropItemType(..), createDragDrop, createDragDropContext)
 import React.Basic.ReactDND.Backends.HTML5Backend (html5Backend)
 
-dndContext :: ReactComponent DragDropContextProps
+dndContext :: React.Component DragDropContextProps
 dndContext = createDragDropContext html5Backend
 
 dnd :: DragDrop { itemId :: String, index :: Int }
 dnd = createDragDrop (DragDropItemType "TODO_ITEM")
 
-component :: ReactComponent {}
-component = react { displayName: "BasicExample", initialState, receiveProps, render }
+component :: React.Component {}
+component = React.component { displayName: "BasicExample", initialState, receiveProps, render }
   where
     initialState =
       { todos:
@@ -29,13 +29,13 @@ component = react { displayName: "BasicExample", initialState, receiveProps, ren
           ]
       }
 
-    receiveProps _ _ _ =
+    receiveProps _ =
       pure unit
 
-    render _ state setState =
-      createElement dndContext
+    render { state, setState } =
+      React.element dndContext
         { child:
-            fragment
+            React.fragment
               [ R.h1_ [ R.text "Todos" ]
               , R.p_ [ R.text "Drag to reorder the list:" ]
               , R.section_ (mapWithIndex renderTodo state.todos)
@@ -43,8 +43,8 @@ component = react { displayName: "BasicExample", initialState, receiveProps, ren
         }
 
       where
-        renderTodo index todo = 
-          createElement dnd.dragSource
+        renderTodo index todo =
+          React.element dnd.dragSource
             { beginDrag: \_ -> pure
                 { itemId: todo.id
                 , index
@@ -54,7 +54,7 @@ component = react { displayName: "BasicExample", initialState, receiveProps, ren
             , isDragging: \{ item: draggingItem } ->
                 pure $ maybe false (\i -> i.itemId == todo.id) draggingItem
             , render: \{ connectDragSource, isDragging } ->
-                createElement dnd.dropTarget
+                React.element dnd.dropTarget
                   { drop: \{ item: dragItem } -> do
                       for_ (_.index <$> dragItem) \dragItemIndex ->
                         setState \s -> s
