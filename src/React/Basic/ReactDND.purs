@@ -22,7 +22,7 @@ import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe, toNullable)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
-import React.Basic (JSX, ReactComponent, createElement, stateless)
+import React.Basic (Component, JSX, element, stateless)
 
 data Backend
 
@@ -89,9 +89,9 @@ type DragLayerProps item =
   }
 
 type DragDrop item =
-  { dragSource :: ReactComponent (DragSourceProps item)
-  , dropTarget :: ReactComponent (DropTargetProps item)
-  , dragLayer :: ReactComponent (DragLayerProps item)
+  { dragSource :: Component (DragSourceProps item)
+  , dropTarget :: Component (DropTargetProps item)
+  , dragLayer :: Component (DragLayerProps item)
   }
 
 createDragDrop
@@ -108,7 +108,7 @@ createDragDrop itemType =
       let jsDragSource = runFn2 unsafeCreateDragSource toMaybe itemType
       in stateless
         { displayName: "DragSource"
-        , render: \props -> createElement jsDragSource
+        , render: \props -> element jsDragSource
             { beginDrag: mkEffectFn1 props.beginDrag
             , endDrag: mkEffectFn1 props.endDrag
             , canDrag: mkEffectFn1 props.canDrag
@@ -121,7 +121,7 @@ createDragDrop itemType =
       let jsDropTarget = runFn2 unsafeCreateDropTarget toMaybe itemType
       in stateless
         { displayName: "DropTarget"
-        , render: \props -> createElement jsDropTarget
+        , render: \props -> element jsDropTarget
             { drop: mkEffectFn1 (map toNullable <<< props.drop)
             , hover: mkEffectFn1 props.hover
             , canDrop: mkEffectFn1 props.canDrop
@@ -133,26 +133,26 @@ createDragDrop itemType =
       let jsDragLayer = unsafeCreateDragLayer toMaybe
       in stateless
         { displayName: "DragLayer"
-        , render: createElement jsDragLayer
+        , render: element jsDragLayer
         }
 
-foreign import createDragDropContext :: Backend -> ReactComponent DragDropContextProps
+foreign import createDragDropContext :: Backend -> Component DragDropContextProps
 
 foreign import unsafeCreateDragSource
   :: forall a
    . Fn2
       (Nullable ~> Maybe)
       DragDropItemType
-      (ReactComponent { | a })
+      (Component { | a })
 
 foreign import unsafeCreateDropTarget
   :: forall a
    . Fn2
       (Nullable ~> Maybe)
       DragDropItemType
-      (ReactComponent { | a })
+      (Component { | a })
 
 foreign import unsafeCreateDragLayer
   :: forall a
    . (Nullable ~> Maybe)
-  -> ReactComponent { | a }
+  -> Component { | a }
