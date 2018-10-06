@@ -16,7 +16,7 @@ import Prelude
 import Data.Array ((!!), drop, mapWithIndex, take)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(Nothing), fromMaybe, maybe)
-import React.Basic (ReactComponent, createElement, fragment, react)
+import React.Basic.Compat (ReactComponent, createElement, fragment, react)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetChecked)
 import React.Basic.Events as Events
@@ -54,7 +54,7 @@ component = react { displayName: "BasicExample", initialState, receiveProps, ren
         }
 
       where
-        renderTodo index todo = 
+        renderTodo index todo =
           createElement dnd.dragSource
             { beginDrag: \_ -> pure
                 { itemId: todo.id

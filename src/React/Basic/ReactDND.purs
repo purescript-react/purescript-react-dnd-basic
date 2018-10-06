@@ -6,7 +6,6 @@ module React.Basic.ReactDND
   , DragSourceCollectArgs
   , DropTargetCollectArgs
   , DragLayerCollectArgs
-  , DragDropContextProps
   , DragSourceProps
   , DropTargetProps
   , DragLayerProps
@@ -22,7 +21,7 @@ import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe, toNullable)
 import Effect (Effect)
 import Effect.Uncurried (mkEffectFn1)
-import React.Basic (Component, JSX, element, stateless)
+import React.Basic (JSX, ReactComponent, element)
 
 data Backend
 
@@ -65,10 +64,6 @@ type DragLayerCollectArgs item =
   | SharedCollectArgs item
   }
 
-type DragDropContextProps =
-  { child :: JSX
-  }
-
 type DragSourceProps item =
   { beginDrag :: DragSourceCollectArgs item -> Effect item
   , endDrag :: DragSourceCollectArgs item -> Effect Unit
@@ -89,9 +84,9 @@ type DragLayerProps item =
   }
 
 type DragDrop item =
-  { dragSource :: Component (DragSourceProps item)
-  , dropTarget :: Component (DropTargetProps item)
-  , dragLayer :: Component (DragLayerProps item)
+  { dragSource :: DragSourceProps item -> JSX
+  , dropTarget :: DropTargetProps item -> JSX
+  , dragLayer :: DragLayerProps item -> JSX
   }
 
 createDragDrop
@@ -106,53 +101,47 @@ createDragDrop itemType =
   where
     dragSource =
       let jsDragSource = runFn2 unsafeCreateDragSource toMaybe itemType
-      in stateless
-        { displayName: "DragSource"
-        , render: \props -> element jsDragSource
+      in \props -> element jsDragSource
             { beginDrag: mkEffectFn1 props.beginDrag
             , endDrag: mkEffectFn1 props.endDrag
             , canDrag: mkEffectFn1 props.canDrag
             , isDragging: mkEffectFn1 props.isDragging
             , render: mkFn1 props.render
             }
-        }
 
     dropTarget =
       let jsDropTarget = runFn2 unsafeCreateDropTarget toMaybe itemType
-      in stateless
-        { displayName: "DropTarget"
-        , render: \props -> element jsDropTarget
+      in \props -> element jsDropTarget
             { drop: mkEffectFn1 (map toNullable <<< props.drop)
             , hover: mkEffectFn1 props.hover
             , canDrop: mkEffectFn1 props.canDrop
             , render: mkFn1 props.render
             }
-        }
 
     dragLayer =
       let jsDragLayer = unsafeCreateDragLayer toMaybe
-      in stateless
-        { displayName: "DragLayer"
-        , render: element jsDragLayer
-        }
+      in element jsDragLayer
 
-foreign import createDragDropContext :: Backend -> Component DragDropContextProps
+createDragDropContext :: Backend -> JSX -> JSX
+createDragDropContext backend = (\c child -> element c { child }) (createDragDropContext_ backend)
+
+foreign import createDragDropContext_ :: Backend -> ReactComponent { child :: JSX }
 
 foreign import unsafeCreateDragSource
   :: forall a
    . Fn2
       (Nullable ~> Maybe)
       DragDropItemType
-      (Component { | a })
+      (ReactComponent { | a })
 
 foreign import unsafeCreateDropTarget
   :: forall a
    . Fn2
       (Nullable ~> Maybe)
       DragDropItemType
-      (Component { | a })
+      (ReactComponent { | a })
 
 foreign import unsafeCreateDragLayer
   :: forall a
    . (Nullable ~> Maybe)
-  -> Component { | a }
+  -> ReactComponent { | a }

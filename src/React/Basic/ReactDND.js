@@ -19,7 +19,7 @@ RenderPropComponent.prototype.render = function() {
   return this.props.render(this.props);
 };
 
-exports.createDragDropContext = function(backend) {
+exports.createDragDropContext_ = function(backend) {
   return DND.DragDropContext(backend)(SingleChildComponent);
 };
 

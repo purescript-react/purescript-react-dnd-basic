@@ -5,21 +5,32 @@ import Prelude
 import Data.Array ((!!), drop, mapWithIndex, take)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(Nothing), fromMaybe, maybe)
-import React.Basic as React
+import React.Basic (Component, JSX, StateUpdate(..), createComponent, fragment, make)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetChecked)
 import React.Basic.Events as Events
-import React.Basic.ReactDND (DragDrop, DragDropContextProps, DragDropItemType(..), createDragDrop, createDragDropContext)
+import React.Basic.ReactDND (DragDrop, DragDropItemType(..), createDragDrop, createDragDropContext)
 import React.Basic.ReactDND.Backends.HTML5Backend (html5Backend)
 
-dndContext :: React.Component DragDropContextProps
+dndContext :: JSX -> JSX
 dndContext = createDragDropContext html5Backend
 
 dnd :: DragDrop { itemId :: String, index :: Int }
 dnd = createDragDrop (DragDropItemType "TODO_ITEM")
 
-component :: React.Component {}
-component = React.component { displayName: "BasicExample", initialState, receiveProps, render }
+data Action
+  = Move { from :: Int, to :: Int }
+  | SetDone String Boolean
+
+component :: Component
+component = createComponent "TodoExample"
+
+todoExample :: JSX
+todoExample = unit # make component
+  { initialState = initialState
+  , update = update
+  , render = render
+  }
   where
     initialState =
       { todos:
@@ -29,22 +40,29 @@ component = React.component { displayName: "BasicExample", initialState, receive
           ]
       }
 
-    receiveProps _ =
-      pure unit
+    update self = case _ of
+      Move { from, to } ->
+        Update self.state { todos = moveItem from to self.state.todos }
 
-    render { state, setState } =
-      React.element dndContext
-        { child:
-            React.fragment
-              [ R.h1_ [ R.text "Todos" ]
-              , R.p_ [ R.text "Drag to reorder the list:" ]
-              , R.section_ (mapWithIndex renderTodo state.todos)
-              ]
-        }
+      SetDone id done ->
+        Update self.state
+          { todos = self.state.todos <#> \t ->
+              if t.id == id
+              then t { done = done }
+              else t
+          }
+
+    render { state, send } =
+      dndContext $
+        fragment
+          [ R.h1_ [ R.text "Todos" ]
+          , R.p_ [ R.text "Drag to reorder the list:" ]
+          , R.section_ (mapWithIndex renderTodo state.todos)
+          ]
 
       where
         renderTodo index todo =
-          React.element dnd.dragSource
+          dnd.dragSource
             { beginDrag: \_ -> pure
                 { itemId: todo.id
                 , index
@@ -54,12 +72,10 @@ component = React.component { displayName: "BasicExample", initialState, receive
             , isDragging: \{ item: draggingItem } ->
                 pure $ maybe false (\i -> i.itemId == todo.id) draggingItem
             , render: \{ connectDragSource, isDragging } ->
-                React.element dnd.dropTarget
+                dnd.dropTarget
                   { drop: \{ item: dragItem } -> do
                       for_ (_.index <$> dragItem) \dragItemIndex ->
-                        setState \s -> s
-                          { todos = moveItem dragItemIndex index s.todos
-                          }
+                        send $ Move { from: dragItemIndex, to: index }
                       pure Nothing
                   , hover: const (pure unit)
                   , canDrop: const (pure true)
@@ -84,12 +100,7 @@ component = React.component { displayName: "BasicExample", initialState, receive
                                   { "type": "checkbox"
                                   , checked: todo.done
                                   , onChange: Events.handler targetChecked \checked -> do
-                                      setState \s -> s
-                                        { todos = s.todos <#> \t ->
-                                            if t.id == todo.id
-                                            then t { done = fromMaybe false checked }
-                                            else t
-                                        }
+                                      send $ SetDone todo.id $ fromMaybe false checked
                                   }
                               , R.text todo.text
                               ]
