@@ -5,7 +5,7 @@ import Prelude
 import Data.Array ((!!), drop, mapWithIndex, take)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(Nothing), fromMaybe, maybe)
-import React.Basic (Component, JSX, StateUpdate(..), createComponent, fragment, make)
+import React.Basic (Component, JSX, StateUpdate(..), createComponent, fragment, make, send)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetChecked)
 import React.Basic.Events as Events
@@ -22,15 +22,11 @@ data Action
   = Move { from :: Int, to :: Int }
   | SetDone String Boolean
 
-component :: Component
+component :: Component Unit
 component = createComponent "TodoExample"
 
 todoExample :: JSX
-todoExample = unit # make component
-  { initialState = initialState
-  , update = update
-  , render = render
-  }
+todoExample = unit # make component { initialState, update, render }
   where
     initialState =
       { todos:
@@ -52,12 +48,12 @@ todoExample = unit # make component
               else t
           }
 
-    render { state, send } =
+    render self =
       dndContext $
         fragment
           [ R.h1_ [ R.text "Todos" ]
           , R.p_ [ R.text "Drag to reorder the list:" ]
-          , R.section_ (mapWithIndex renderTodo state.todos)
+          , R.section_ (mapWithIndex renderTodo self.state.todos)
           ]
 
       where
@@ -75,7 +71,7 @@ todoExample = unit # make component
                 dnd.dropTarget
                   { drop: \{ item: dragItem } -> do
                       for_ (_.index <$> dragItem) \dragItemIndex ->
-                        send $ Move { from: dragItemIndex, to: index }
+                        send self $ Move { from: dragItemIndex, to: index }
                       pure Nothing
                   , hover: const (pure unit)
                   , canDrop: const (pure true)
@@ -100,7 +96,7 @@ todoExample = unit # make component
                                   { "type": "checkbox"
                                   , checked: todo.done
                                   , onChange: Events.handler targetChecked \checked -> do
-                                      send $ SetDone todo.id $ fromMaybe false checked
+                                      send self $ SetDone todo.id $ fromMaybe false checked
                                   }
                               , R.text todo.text
                               ]
