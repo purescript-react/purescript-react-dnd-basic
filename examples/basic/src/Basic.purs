@@ -5,7 +5,7 @@ import Prelude
 import Data.Array ((!!), drop, mapWithIndex, take)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(Nothing), fromMaybe, maybe)
-import React.Basic (Component, JSX, StateUpdate(..), createComponent, fragment, make, send)
+import React.Basic (Component, JSX, StateUpdate(..), createComponent, fragment, make, runUpdate)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetChecked)
 import React.Basic.Events as Events
@@ -26,7 +26,7 @@ component :: Component Unit
 component = createComponent "TodoExample"
 
 todoExample :: JSX
-todoExample = unit # make component { initialState, update, render }
+todoExample = unit # make component { initialState, render }
   where
     initialState =
       { todos:
@@ -47,6 +47,8 @@ todoExample = unit # make component { initialState, update, render }
               then t { done = done }
               else t
           }
+
+    send self = runUpdate update self
 
     render self =
       dndContext $
