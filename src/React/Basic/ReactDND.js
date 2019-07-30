@@ -104,7 +104,7 @@ exports.unsafeCreateDropTarget = function(toMaybe, type) {
     return {
       canDrop: flags.canDrop ? monitor.canDrop() : toMaybe(null),
       isOver: monitor.isOver(),
-      isOverShallow: monitor.isOver(true),
+      isOverShallow: monitor.isOver({ shallow: true }),
       dropResult: toMaybe(monitor.getDropResult()),
       didDrop: monitor.didDrop()
     };
