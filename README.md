@@ -1,6 +1,6 @@
 # purescript-react-dnd-basic
 
-[react-basic](https://github.com/lumihq/purescript-react-basic) bindings for [react-dnd](https://react-dnd.github.io/react-dnd/)
+[react-basic](https://github.com/lumihq/purescript-react-basic) bindings for [react-dnd](https://react-dnd.github.io/react-dnd/) _*v2*_
 
 ## Docs
 
