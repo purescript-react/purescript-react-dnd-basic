@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "purescript-prelude": "^4.1.0",
-    "purescript-react-basic": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
+    "purescript-react-basic": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0",
     "purescript-nullable": "^4.0.0",
     "purescript-promises": "^3.0.0"
   },
