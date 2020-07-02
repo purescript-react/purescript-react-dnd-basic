@@ -1,3 +1,3 @@
 "use strict";
 
-exports.testBackend = require("react-dnd-test-backend");
+exports.testBackend = require("react-dnd-test-backend").TestBackend;

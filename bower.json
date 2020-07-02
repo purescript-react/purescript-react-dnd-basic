@@ -1,16 +1,22 @@
 {
   "name": "purescript-react-dnd-basic",
-  "ignore": ["**/.*", "node_modules", "bower_components", "output"],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/lumihq/purescript-react-dnd-basic.git"
   },
   "dependencies": {
-    "purescript-prelude": "^4.1.0",
-    "purescript-react-basic": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0",
-    "purescript-nullable": "^4.0.0",
-    "purescript-promises": "^3.0.0"
+    "purescript-prelude": "^4.1.1",
+    "purescript-nullable": "^4.1.1",
+    "purescript-promises": "^3.1.1",
+    "purescript-react-basic-dom": "lumihq/purescript-react-basic-dom#^2.0.0",
+    "purescript-react-basic-hooks": "^6.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0"

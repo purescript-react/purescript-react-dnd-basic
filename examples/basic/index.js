@@ -1,10 +1,9 @@
 "use strict";
 
-var React = require("react");
-var ReactDOM = require("react-dom");
-var Counter = require("./output/bundle.js");
+const ReactDOM = require("react-dom");
+const TodoExample = require("./output/bundle.js");
 
 ReactDOM.render(
-  Counter.todoExample,
+  TodoExample.mkTodoExample()(),
   document.getElementById("container")
 );
