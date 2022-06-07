@@ -1,3 +1,3 @@
-"use strict";
+import { TouchBackend } from "react-dnd-touch-backend";
 
-exports.touchBackend = require("react-dnd-touch-backend").TouchBackend;
+export const touchBackend = TouchBackend;

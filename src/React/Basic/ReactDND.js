@@ -1,10 +1,8 @@
-"use strict";
+import DND from "react-dnd";
 
-const DND = require("react-dnd");
+export const dndProvider_ = DND.DndProvider;
 
-exports.dndProvider_ = DND.DndProvider;
-
-exports.useDrag_ = (options) => {
+export const useDrag_ = (options) => {
   const [{ isDragging }, connectDrag] = DND.useDrag({
     item: options.item,
     collect: (monitor) => {
@@ -15,7 +13,7 @@ exports.useDrag_ = (options) => {
   return { isDragging, connectDrag };
 };
 
-exports.useDrop_ = (options) => {
+export const useDrop_ = (options) => {
   const [{ id, isOver }, connectDrop] = DND.useDrop({
     accept: options.accept,
     drop: (item) => {
@@ -33,7 +31,7 @@ exports.useDrop_ = (options) => {
   return { id, isOver, connectDrop };
 };
 
-exports.mergeTargets = (ref1) => (ref2) => {
+export const mergeTargets = (ref1) => (ref2) => {
   // shhhhhhh, don't look 🙈
   // sometimes refs are React ref objects..
   // sometimes they're functions..

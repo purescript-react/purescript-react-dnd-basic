@@ -1,3 +1,3 @@
-"use strict";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-exports.html5Backend = require("react-dnd-html5-backend").HTML5Backend;
+export const html5Backend = HTML5Backend;
