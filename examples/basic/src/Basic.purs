@@ -1,11 +1,14 @@
-module Basic where
+module Example.Basic where
 
 import Prelude
 import Data.Array ((!!), drop, mapWithIndex, take)
 import Data.Foldable (traverse_)
 import Data.Int as Int
-import Data.Maybe (fromMaybe, maybe)
+import Data.Maybe (fromMaybe, maybe, Maybe(..))
 import Effect (Effect)
+import Effect.Class.Console as Console
+import Effect.Exception (throw)
+import React.Basic.DOM (render)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetChecked)
 import React.Basic.Events as Events
@@ -13,13 +16,16 @@ import React.Basic.Hooks (Component, component, fragment, mkReducer, useReducer,
 import React.Basic.Hooks as React
 import React.Basic.ReactDND (dndProvider, mergeTargets, useDrag, useDrop)
 import React.Basic.ReactDND.Backends.HTML5Backend (html5Backend)
+import Web.DOM.NonElementParentNode (getElementById)
+import Web.HTML (window)
+import Web.HTML.HTMLDocument (toNonElementParentNode)
+import Web.HTML.Window (document)
 
 data Action
   = Move { from :: Int, to :: Int }
   | SetDone String Boolean
 
-type Todo
-  = { id :: String, text :: String, done :: Boolean }
+type Todo = { id :: String, text :: String, done :: Boolean }
 
 mkTodoExample :: Component Unit
 mkTodoExample = do
@@ -34,7 +40,7 @@ mkTodoExample = do
           , R.p_ [ R.text "Drag to reorder the list:" ]
           , R.section_
               $ state.todos
-              # mapWithIndex \index t -> todo { index, todo: t, dispatch }
+                  # mapWithIndex \index t -> todo { index, todo: t, dispatch }
           ]
   where
   initialState =
@@ -53,20 +59,20 @@ mkTodoExample = do
     SetDone id done ->
       state
         { todos =
-          state.todos
-            <#> \t ->
+            state.todos
+              <#> \t ->
                 if t.id == id then
                   t { done = done }
                 else
                   t
         }
 
-mkTodo ::
-  Component
-    { index :: Int
-    , todo :: Todo
-    , dispatch :: Action -> Effect Unit
-    }
+mkTodo
+  :: Component
+       { index :: Int
+       , todo :: Todo
+       , dispatch :: Action -> Effect Unit
+       }
 mkTodo = do
   let
     todoDND = "todo-dnd"
@@ -119,3 +125,15 @@ moveItem fromIndex toIndex items =
     take toIndex items'
       <> maybe [] pure item
       <> drop toIndex items'
+
+main :: Effect Unit
+main = do
+  maybeRoot <- window
+    >>= document
+    >>= toNonElementParentNode
+      >>> getElementById "container"
+  case maybeRoot of
+    Nothing -> throw "Root element not found."
+    Just container -> do
+      todoExample <- mkTodoExample
+      render (todoExample unit) container
