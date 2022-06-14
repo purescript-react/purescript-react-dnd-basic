@@ -1,26 +1,49 @@
 name: Node CI
 
-on: [push]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [12.x, 14.x, 16.x, 18.x]
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: build
-      run: |
-        npm install
-        npx bower install
-        npm run build
-      env:
-        CI: true
+      - uses: actions/checkout@v2
+
+      - name: Set up PureScript toolchain
+        uses: purescript-contrib/setup-purescript@main
+        with:
+          purescript: "0.15.0"
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Install spago deps
+        run: npm run deps
+
+      - name: Build the project
+        run: npm run build
