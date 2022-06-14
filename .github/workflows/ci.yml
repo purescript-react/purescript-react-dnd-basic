@@ -47,3 +47,6 @@ jobs:
 
       - name: Build the project
         run: npm run build
+
+      - name: Build examples
+        run: npm run example

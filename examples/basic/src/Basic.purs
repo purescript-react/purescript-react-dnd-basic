@@ -128,12 +128,12 @@ moveItem fromIndex toIndex items =
 
 main :: Effect Unit
 main = do
-  maybeRoot <- window
+  maybeContainer <- window
     >>= document
     >>= toNonElementParentNode
       >>> getElementById "container"
-  case maybeRoot of
-    Nothing -> throw "Root element not found."
+  case maybeContainer of
+    Nothing -> throw "Container element not found."
     Just container -> do
       todoExample <- mkTodoExample
       render (todoExample unit) container
