@@ -1,4 +1,4 @@
-import DND from "react-dnd";
+import * as DND from "react-dnd";
 
 export const dndProvider_ = DND.DndProvider;
 
