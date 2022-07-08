@@ -11,3 +11,4 @@
 /.spago/
 /output-pulp/
 .psc-*
+/.direnv
