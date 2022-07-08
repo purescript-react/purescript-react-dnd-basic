@@ -1,24 +1,32 @@
 {
   "name": "purescript-react-dnd-basic",
+  "license": [
+    "Apache-2.0"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lumihq/purescript-react-dnd-basic"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "output"
   ],
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lumihq/purescript-react-dnd-basic.git"
-  },
   "dependencies": {
-    "purescript-prelude": "^4.1.1",
-    "purescript-nullable": "^4.1.1",
-    "purescript-promises": "^3.1.1",
-    "purescript-react-basic-dom": "lumihq/purescript-react-basic-dom#^3.3.0",
-    "purescript-react-basic-hooks": "^6.0.0"
+    "purescript-console": "^v6.0.0",
+    "purescript-effect": "^v4.0.0",
+    "purescript-maybe": "^v6.0.0",
+    "purescript-nullable": "^v6.0.0",
+    "purescript-prelude": "^v6.0.0",
+    "purescript-react-basic-hooks": "^v8.0.0",
+    "purescript-web-dom": "^v6.0.0"
   },
-  "devDependencies": {
-    "purescript-psci-support": "^4.0.0"
+  "resolutions": {
+    "purescript-prelude": "^6.0.0",
+    "purescript-newtype": "^5.0.0",
+    "purescript-control": "^6.0.0",
+    "purescript-unsafe-coerce": "^6.0.0",
+    "purescript-safe-coerce": "^2.0.0"
   }
 }
